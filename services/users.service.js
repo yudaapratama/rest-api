@@ -9,6 +9,12 @@ const UsersService = {
     resolve(users)
   }),
 
+  getUserById: (request) => new Promise(async (resolve, reject) => {
+    const { data: { user }, error } = await db.auth.admin.getUserById(request.id)
+    if (error) reject(error)
+    resolve(user)
+  }),
+
   createUser: (request) => new Promise(async (resolve, reject) => {
     const { data: { user }, error } = await db.auth.admin.createUser({
       email: request.email,
@@ -23,8 +29,12 @@ const UsersService = {
   }),
 
   updateUser: (request) => new Promise(async (resolve, reject) => {
-    const { data: user, error } = await db.auth.admin.updateUserById(request.id, {
+    const { data: { user }, error } = await db.auth.admin.updateUserById(request.id, {
       email: request.email,
+      email_confirm: true,
+      user_metadata: {
+        name: request.name,
+      },
     })
     if (error) reject(error)
     resolve(user)
@@ -38,8 +48,8 @@ const UsersService = {
     resolve(user)
   }),
 
-  deleteeUser: (request) => new Promise(async (resolve, reject) => {
-    const { data: user, error } = await db.auth.admin.deleteUser(request.id)
+  deleteUser: (request) => new Promise(async (resolve, reject) => {
+    const { data: { user }, error } = await db.auth.admin.deleteUser(request.id)
     if (error) reject(error)
     resolve(user)
   }),
